@@ -7,3 +7,11 @@ secrets
 evidence
 *.apk
 *.key
+
+.env
+.env.*
+*.pem
+*.jks
+*.keystore
+!app/src/debug/res/raw/hardening_test_ca.pem
+!testing/config.env.example

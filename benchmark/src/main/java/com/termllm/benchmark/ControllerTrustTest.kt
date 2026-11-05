@@ -14,14 +14,14 @@ import java.util.concurrent.TimeUnit
 /** A REAL second Android UID, not a mocked ControllerInfo.isTrusted flag. */
 @RunWith(AndroidJUnit4::class)
 class ControllerTrustTest {
- @Test fun unrelatedUidCannotConnectToThePrimaryPlaybackSession() {
+ @Test fun unrelatedUidCannotConnectToTheShrunkPlaybackSession() {
   val instrumentation=InstrumentationRegistry.getInstrumentation()
   val context=instrumentation.context
-  val primary=context.packageManager.getApplicationInfo("com.termllm.app",0)
-  assertTrue("Only run against the owned DEBUG primary fixture",primary.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0)
+  val primary=context.packageManager.getApplicationInfo("com.termllm.app.benchmark",0)
+  assertTrue("Only run against the isolated non-debuggable R8 fixture",primary.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0)
   assertTrue("This regression requires a genuinely different UID",primary.uid != context.applicationInfo.uid)
-  UiDevice.getInstance(instrumentation).executeShellCommand("am start -W -n com.termllm.app/.MainActivity")
-  val future=MediaController.Builder(context,SessionToken(context,ComponentName("com.termllm.app","com.termllm.app.listen.ListenService"))).buildAsync()
+  UiDevice.getInstance(instrumentation).executeShellCommand("am start -W -n com.termllm.app.benchmark/com.termllm.app.MainActivity")
+  val future=MediaController.Builder(context,SessionToken(context,ComponentName("com.termllm.app.benchmark","com.termllm.app.listen.ListenService"))).buildAsync()
   try {
    future.get(10,TimeUnit.SECONDS)
    fail("An unrelated untrusted UID must not acquire a controller capable of injecting media")

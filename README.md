@@ -54,3 +54,25 @@ carrier transitions, human TalkBack usability, and physical authenticator behavi
 remain explicit hardware checks. Emulator benchmark numbers are not device claims.
 Private publication is owner-gated; no remote is created by these recipes.
 See LICENSE and PROVENANCE.md before any redistribution.
+
+### External QA certificate mounts
+
+`testing/config.env.example` contains placeholders only. Set the certificate/key
+paths to files OUTSIDE the checkout, then mount read-only. Do not put real values
+in Docker build arguments or copy private config into the image. Example for a
+loopback-only independent QA relay (not a production deployment):
+
+```sh
+: "${QA_CERT_FILE:?external public certificate path}"
+: "${QA_KEY_FILE:?external private key path}"
+docker run --rm --network=host \
+ --mount "type=bind,source=$(realpath "$QA_CERT_FILE"),target=/run/secrets/relay.crt,readonly" \
+ --mount "type=bind,source=$(realpath "$QA_KEY_FILE"),target=/run/secrets/relay.key,readonly" \
+ termllm-android-private python3 testing/push_relay.py --bind 127.0.0.1 \
+ --cert /run/secrets/relay.crt --key /run/secrets/relay.key
+```
+
+For the all-in-one disposable emulator harness, use a temporary secrets directory
+or a writable tmpfs at runtime; `prepare-tls.sh` refuses paths inside the source
+tree. The checked-in debug CA is public, not its private key. `.env`/private-key
+files are excluded from both Git and Docker contexts by default.

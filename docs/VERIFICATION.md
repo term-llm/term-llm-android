@@ -1,8 +1,8 @@
 # Verification and limits
 
-Final app source regression: **197 JVM tests,60 instrumentation tests,0 failures,0 skips**. Separate self-instrumenting APK: **2/2** tests (genuinely different-UID controller rejected + cold startup). Unminified isolated profile generator:1/1, 20570 unobfuscated rules. R8/resource shrinking and release lint passed; debug fixture CA absent from release; baseline.prof packaged.
+Final app source regression: **197 JVM tests,60 instrumentation tests,0 failures,0 skips**. Separate self-instrumenting APK: **2/2** tests (genuinely different-UID controller rejected by the isolated R8 session + cold startup). Unminified isolated profile generator:1/1, 20570 unobfuscated rules. R8/resource shrinking and release lint passed; debug fixture CA absent from release; baseline.prof packaged.
 
-Startup on API35 x86_64 emulator, SwiftShader, container10CPU/22GiB (test node2CPU/2GiB), CompilationMode.None,3 cold runs: [341.009535, 311.034737, 314.403458]ms; median **314.403ms**. This is an emulator measurement, not a claim about physical speed or a measured baseline-profile speedup. Perfetto traces remain in external evidence.
+Startup on API35 x86_64 emulator, SwiftShader, container10CPU/22GiB (test node2CPU/2GiB), CompilationMode.None,3 cold runs: [356.216041, 341.567363, 338.135274]ms; median **341.567ms**. This is an emulator measurement, not a claim about physical speed or a measured baseline-profile speedup. Perfetto traces remain in external evidence.
 
 ## APKs
 

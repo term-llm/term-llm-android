@@ -18,3 +18,9 @@ __pycache__/
 /private/
 /secrets/
 /evidence/
+
+.env
+.env.*
+*.pem
+!app/src/debug/res/raw/hardening_test_ca.pem
+!*.env.example
