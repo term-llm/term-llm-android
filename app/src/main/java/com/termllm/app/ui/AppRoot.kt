@@ -448,7 +448,10 @@ fun AppRoot(
                     vm = vm,
                     states = states,
                     holder = chatHolder,
-                    onBack = { navController.navigate("agents") },
+                    onBack = { navController.navigate("agents") {
+                        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                    } },
                 )
             }
             composable("settings") {

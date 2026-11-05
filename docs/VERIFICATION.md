@@ -1,17 +1,17 @@
 # Verification and limits
 
-Final app source regression: **197 JVM tests,60 instrumentation tests,0 failures,0 skips**. Separate self-instrumenting APK: **2/2** tests (genuinely different-UID controller rejected by the isolated R8 session + cold startup). Unminified isolated profile generator:1/1, 20570 unobfuscated rules. R8/resource shrinking and release lint passed; debug fixture CA absent from release; baseline.prof packaged.
+Final app source regression: **197 JVM tests,60 instrumentation tests,0 failures,0 skips**. Separate self-instrumenting APK: **2/2** tests (genuinely different-UID controller rejected by the isolated R8 session + cold startup). Unminified isolated profile generator:1/1, 20565 unobfuscated rules. R8/resource shrinking and release lint passed; debug fixture CA absent from release; baseline.prof packaged.
 
-Startup on API35 x86_64 emulator, SwiftShader, container10CPU/22GiB (test node2CPU/2GiB), CompilationMode.None,3 cold runs: [356.216041, 341.567363, 338.135274]ms; median **341.567ms**. This is an emulator measurement, not a claim about physical speed or a measured baseline-profile speedup. Perfetto traces remain in external evidence.
+Startup on API35 x86_64 emulator, SwiftShader, container10CPU/22GiB (test node2CPU/2GiB), CompilationMode.None,3 cold runs: [345.724395, 344.680033, 331.109231]ms; median **344.680ms**. This is an emulator measurement, not a claim about physical speed or a measured baseline-profile speedup. Perfetto traces remain in external evidence.
 
 ## APKs
 
 These artifacts were rebuilt from the sanitized Git projection itself, which also passed197 JVM tests, release lint/R8 and the complete60-test device suite. They replace earlier workspace artifact hashes.
 
 
-Debug SHA256: `16a080fbfe2dd861937665d3987a5d419de9f81addab8c6d0d684dc38f9833ec` (25532158 bytes).
+Debug SHA256: `c7fb68b879a020a33cb31410fd929ee04d13395a81ce9c04370135d7705b90ff` (26024271 bytes).
 
-Unsigned release SHA256: `ac49cb35fbb23a44d62c9aeede13147811af9766cbfc43e95496ae8600cdd842` (2895821 bytes). Sign release with an external owner-controlled keystore; do not commit it.
+Unsigned release SHA256: `bd4702be79f8a114fcdfa5f637def0546a440b9af6b9c5f291fbd33e36ccec3f` (2895821 bytes). Sign release with an external owner-controlled keystore; do not commit it.
 
 ## Real journeys
 
@@ -34,3 +34,7 @@ Dockerfile actually built and account-free fresh-container emulator recipe passe
 ## Publication gate
 
 Only the sanitized projection is eligible for a new private repository. It has no inherited history. Run source and complete-history secret scans before handoff; do not include external evidence, private fixture credentials, records, recordings, emulator data, builds, iOS reference or core copies. Owner/parent reviews the scan/commit evidence and chooses/creates the private remote. No remote is configured by the implementation agent. Licensing remains private/no redistribution; see PROVENANCE.md and licenses/Apache-2.0.txt.
+
+## Final SPA-history regression
+
+A last live pushState check exposed native Back relying on page-load callbacks. Fixed by tracking actual current history locations, committing Back against the live WebView state, rebinding source listeners, avoiding stale AndroidView reloads, and deduplicating the native fallback stack. The expanded real-holder UI test covers full navigation, system/edge Back, SPA pushState/popstate, actual saved URL and a second source/profile. Three focused repetitions and the refreshed complete60-test suite passed. Web interactions use trusted input derived from real DOM element bounds; untrusted JS .click() would trigger Chromium history-skipping policy and is not a valid user-Back test. No production notify/remote publication occurred.

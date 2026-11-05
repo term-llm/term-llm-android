@@ -70,11 +70,11 @@ fun ChatScreen(
     var loading by remember { mutableStateOf(false) }
     var failed by remember { mutableStateOf<String?>(null) }
     var capturing by remember { mutableStateOf(holder.capturing) }
-    var webBack by remember { mutableStateOf(false) }
-    androidx.activity.compose.PredictiveBackHandler(enabled = webBack) { progress ->
+    androidx.activity.compose.PredictiveBackHandler { progress ->
         try {
             progress.collect { /* Commit web navigation only when predictive gesture completes. */ }
-            holder.webView?.goBack()
+            // Decide at commit time: SPA history may change without a load callback.
+            if (holder.webView?.canGoBack() == true) holder.webView?.goBack() else onBack()
         } catch (_: kotlinx.coroutines.CancellationException) { /* Cancelled gesture leaves the document intact. */ }
     }
 
@@ -92,16 +92,21 @@ fun ChatScreen(
 
     val target = remember(connectionId, path) { vm.chatUrl(connectionId, path) }
 
-    DisposableEffect(holder) {
+    DisposableEffect(holder, connectionId) {
         val listener = object : ChatDocumentHolder.Listener {
             override fun onLoading() {
                 loading = true
                 failed = null
             }
 
+            override fun onLocationChanged(path: String?, canGoBack: Boolean) {
+                if (path != null && holder.loadedConnectionId == connectionId) {
+                    vm.openChat(connectionId, path)
+                }
+            }
+
             override fun onLoaded() {
                 loading = false
-                webBack = holder.webView?.canGoBack() == true
                 if (BuildConfig.DEBUG && !token.isNullOrEmpty()) {
                     holder.webView?.evaluateJavascript(
                         "JSON.stringify({token: localStorage.getItem('term_llm_token') !== null," +
@@ -134,7 +139,7 @@ fun ChatScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { if (webBack) holder.webView?.goBack() else onBack() }) {
+                    IconButton(onClick = { if (holder.webView?.canGoBack() == true) holder.webView?.goBack() else onBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -191,7 +196,13 @@ fun ChatScreen(
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
                     factory = { context -> android.widget.FrameLayout(context) },
-                    update = { container -> holder.attach(container, connection, path, token) }
+                    update = { container ->
+                        // A history callback may already have advanced the destination
+                        // while this composition still carries the previous path. Never
+                        // reload a live SPA from a stale AndroidView update lambda.
+                        val latest = vm.chatTarget.value
+                        if (latest?.first == connectionId) holder.attach(container, connection, latest.second, token)
+                    }
                 )
             }
         }

@@ -44,6 +44,7 @@ class ChatDocumentHolder(private val context: Context) {
         fun onLoading()
         fun onLoaded()
         fun onError(message: String)
+        fun onLocationChanged(path: String?, canGoBack: Boolean) {}
     }
 
     var listener: Listener? = null
@@ -274,6 +275,27 @@ class ChatDocumentHolder(private val context: Context) {
                 // the page without firing events), so the native side is reset here too.
                 setCapturing(false)
                 listener?.onLoading()
+            }
+
+            override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                super.doUpdateVisitedHistory(view, url, isReload)
+                // Chromium can call this before its Java back/forward list is
+                // committed. Read authoritative current state on the next main turn,
+                // never the possibly stale URL argument or a detached View.post queue.
+                mainHandler.post {
+                    if (view !== webView || view == null) return@post
+                    val connection = lastConnection ?: return@post
+                    if (loadedConnectionId != connection.id) return@post
+                    val target = view.url?.let { runCatching { it.toHttpUrl() }.getOrNull() }
+                    val trusted = target != null && ServerAddress.isWithinMount(target, connection.url.toHttpUrl())
+                    val path = if (trusted) target!!.encodedPath + (target.encodedQuery?.let { "?" + it } ?: "") else null
+                    if (path != null) {
+                        loadedPath = path
+                        lastPath = path
+                        loadedUrl = target.toString()
+                    }
+                    listener?.onLocationChanged(path, view.canGoBack())
+                }
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
