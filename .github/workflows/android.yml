@@ -1,10 +1,11 @@
 name: Android private build
-on: [push, pull_request, workflow_dispatch]
+on:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, x64, android-kvm]
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
