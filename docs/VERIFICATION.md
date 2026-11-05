@@ -6,9 +6,12 @@ Startup on API35 x86_64 emulator, SwiftShader, container10CPU/22GiB (test node2C
 
 ## APKs
 
-Debug SHA256: `f6893e9f7c9de6d97c1f531e4fe86db950b631c3e3354bdbaaf6603d25711b81` (26004387 bytes).
+These artifacts were rebuilt from the sanitized Git projection itself, which also passed197 JVM tests, release lint/R8 and the complete60-test device suite. They replace earlier workspace artifact hashes.
 
-Unsigned release SHA256: `0ebcc4b677ae187c6566f3c16c9a2564ea139dc998c06aa6ea5331479a6fd4ca` (2895821 bytes). Sign release with an external owner-controlled keystore; do not commit it.
+
+Debug SHA256: `16a080fbfe2dd861937665d3987a5d419de9f81addab8c6d0d684dc38f9833ec` (25532158 bytes).
+
+Unsigned release SHA256: `ac49cb35fbb23a44d62c9aeede13147811af9766cbfc43e95496ae8600cdd842` (2895821 bytes). Sign release with an external owner-controlled keystore; do not commit it.
 
 ## Real journeys
 
