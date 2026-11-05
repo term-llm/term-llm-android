@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android counterpart of the iOS "Start Live Conversation" App Intent / Action Button shortcut. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="live_voice"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_btn_speak_now"
+        android:shortcutShortLabel="@string/shortcut_voice_short"
+        android:shortcutLongLabel="@string/shortcut_voice_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="termllm://voice"
+            android:targetPackage="com.termllm.app"
+            android:targetClass="com.termllm.app.MainActivity" />
+    </shortcut>
+</shortcuts>

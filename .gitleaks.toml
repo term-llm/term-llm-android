@@ -1,0 +1,17 @@
+# Only these public, frozen conformance-vector values are exempt.
+# Seeds/pairing_secret are sequential test bytes; never operational credentials.
+# Exact path AND exact secret bytes: changing a vector value reopens the finding.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public deterministic pairing-v2 conformance vectors, test resources only"
+condition = "AND"
+paths = ['(^|/)app/src/test/resources/vectors_v2\.json$']
+regexTarget = "secret"
+regexes = [
+  '^A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg$',
+  '^Kay64UG8yvCyLhqU000LxzYeUm0L_hLIl5S8kyKWbdc$',
+  '^wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t8$',
+  '^GNYGK6Gilj7Ywjzf9gteSebL72uRZV4HGr9W0OJftpE$',
+]
