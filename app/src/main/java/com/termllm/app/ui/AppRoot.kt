@@ -5,6 +5,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import kotlinx.coroutines.launch
 
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -404,9 +405,10 @@ fun AppRoot(
         NavHost(
             navController = navController,
             startDestination = "agents",
-            // The outer scaffold already applies these insets. Nested screen
-            // scaffolds must not reserve the same status/navigation bars again.
-            modifier = Modifier.padding(padding).consumeWindowInsets(padding),
+            // Consume the scaffold's bars first; only the remaining IME inset
+            // shrinks the destination. Edge-to-edge adjustResize alone does not
+            // resize the WebView, and adding the full IME would count bars twice.
+            modifier = Modifier.padding(padding).consumeWindowInsets(padding).imePadding(),
         ) {
             composable("agents") {
                 AgentsScreen(

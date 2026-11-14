@@ -2,6 +2,8 @@ package com.termllm.app.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
+import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebStorage
@@ -11,6 +13,7 @@ import androidx.webkit.ProfileStore
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.termllm.app.BuildConfig
+import com.termllm.app.R
 import com.termllm.app.data.ServerAddress
 import com.termllm.app.data.ServerKind
 import com.termllm.app.data.Connection
@@ -223,7 +226,22 @@ class ChatDocumentHolder(private val context: Context) {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun create(): WebView = WebView(context).apply {
+    // The retained holder uses applicationContext, whose default theme is not the
+    // Activity's manifest theme. Resolve our day/night theme for each new view;
+    // reapply it before WebView handles live uiMode changes. Chromium then updates
+    // prefers-color-scheme itself, without reloads or app-injected page styling.
+    private fun create(): WebView = object : WebView(ContextThemeWrapper(context, R.style.Theme_TermLLM)) {
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+            // An off-tab retained document can miss the window's configuration dispatch.
+            dispatchConfigurationChanged(context.resources.configuration)
+        }
+
+        override fun onConfigurationChanged(newConfig: Configuration) {
+            context.theme.applyStyle(R.style.Theme_TermLLM, true)
+            super.onConfigurationChanged(newConfig)
+        }
+    }.apply {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.loadWithOverviewMode = true
