@@ -2,6 +2,7 @@ package com.termllm.app
 
 import android.Manifest
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -85,6 +86,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        // uiMode is handled in place: do not discard an open server document,
+        // draft, or live call just because the OS switched its appearance.
+        theme.applyStyle(R.style.Theme_TermLLM, true)
+        super.onConfigurationChanged(newConfig)
+        enableEdgeToEdge()
     }
 
     override fun onNewIntent(intent: Intent) {
