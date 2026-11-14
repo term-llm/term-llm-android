@@ -1,8 +1,22 @@
-# term-llm Android — private hardening snapshot
+# term-llm for Android (preview)
 
 Native Agents / Chat / Listen / Music client. Chat uses the server-owned WebView;
 device tools require both app/source consent and the page's own opt-in. Queue,
 playback, offline downloads and per-source Web Push routes are native.
+
+## License and release status
+
+Original project-authored code is licensed under [MIT](LICENSE), Copyright (c)
+2026 Sam Saffron. [Third-party components](PROVENANCE.md) retain their own terms.
+This is a public-source release; the intended repository owner is
+[SamSaffron/term-llm-android](https://github.com/SamSaffron/term-llm-android) after
+its owner-operated transfer. See [source release notes](docs/RELEASE-PREPARATION.md)
+and [security reporting](SECURITY.md).
+
+The v3 OS-theme and keyboard-inset fixes are included in main (PR #1). This is
+still a preview, not a claim of full Apple-client parity or guaranteed background
+delivery. APK distribution, signing and hardware qualification are separate from
+this source release; no APK release is performed by these build recipes.
 
 ## Build
 
@@ -12,8 +26,8 @@ Gradle 8.13 wrapper (distribution and artifact checksums are pinned).
 ```sh
 ./gradlew --no-daemon testDebugUnitTest lintRelease assembleRelease
 # Or a portable, account-free container:
-docker build -t termllm-android-private .
-docker run --rm --cpus=12 --memory=24g termllm-android-private
+docker build -t termllm-android-build .
+docker run --rm --cpus=12 --memory=24g termllm-android-build
 ```
 
 Release APKs are unsigned; sign with your own external keystore. Do not check it
@@ -52,7 +66,7 @@ is not FCM and must not be advertised as always-on guaranteed background deliver
 See docs/HARDENING.md and docs/VERIFICATION.md. Hardware speaker/headset/Bluetooth,
 carrier transitions, human TalkBack usability, and physical authenticator behavior
 remain explicit hardware checks. Emulator benchmark numbers are not device claims.
-Private publication is owner-gated; no remote is created by these recipes.
+Publication is owner-gated; build recipes do not create a remote or publish an APK.
 See LICENSE and PROVENANCE.md before any redistribution.
 
 ### External QA certificate mounts
@@ -68,7 +82,7 @@ loopback-only independent QA relay (not a production deployment):
 docker run --rm --network=host \
  --mount "type=bind,source=$(realpath "$QA_CERT_FILE"),target=/run/secrets/relay.crt,readonly" \
  --mount "type=bind,source=$(realpath "$QA_KEY_FILE"),target=/run/secrets/relay.key,readonly" \
- termllm-android-private python3 testing/push_relay.py --bind 127.0.0.1 \
+ termllm-android-build python3 testing/push_relay.py --bind 127.0.0.1 \
  --cert /run/secrets/relay.crt --key /run/secrets/relay.key
 ```
 

@@ -24,3 +24,9 @@ __pycache__/
 *.pem
 !app/src/debug/res/raw/hardening_test_ca.pem
 !*.env.example
+
+# Additional private signing material; public debug CA exception above is retained.
+*.p8
+*.pfx
+*.mobileprovision
+*.provisionprofile

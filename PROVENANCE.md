@@ -1,10 +1,11 @@
 # Provenance and third-party components
 
-This is a private Android implementation of the term-llm client contract, developed
-against a private iOS reference and the term-llm protocol at core revision
-`2496b5fd`. Neither reference tree nor core source is included. Protocol constants
-are compatibility pins, not a claim that this snapshot contains upstream core.
-Confirm derivative-work ownership/licensing with the owner before public reuse.
+Original project-authored Android client code, tests, fixture relays and build/test
+recipes are MIT-licensed, Copyright (c) 2026 Sam Saffron; see LICENSE. The client
+was developed against the term-llm Apple reference and the protocol at core
+revision `2496b5fd`. Neither reference tree nor core source is included or
+relicensed here. Protocol constants are compatibility pins, not bundled core.
+Third-party components retain their own licenses and copyrights.
 
 App code, Kotlin tests, relay fixtures and build/test recipes are included. No
 personal accounts, model credentials, push identities, private CA keys, captured

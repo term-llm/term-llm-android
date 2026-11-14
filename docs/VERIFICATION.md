@@ -1,10 +1,18 @@
 # Verification and limits
 
+## Current v3 source
+
+PR #1 merged the exact reviewed v3 patch as `9a77729a438324326c319cb4b3023fd10ea2d96f` (tested fix commit `b29a51fde45e6217058f120acc479751d95c558e`). Fresh verification on an owned API35 Android15 Pixel6 x86_64 emulator with WebView124.0.6367.219: **197 JVM tests re-executed,0 failures/errors/skips**; debug/test APK builds, release lint and unsigned R8 release build passed. OS-theme + actual system-IME geometry regressions passed **2/2 starting light and2/2 starting dark**; related native holder/trust/isolation/navigation/WebMCP/token/profile tests **21/21**; three-button keyboard regression **1/1**. Runtime/build inputs in this source-hygiene commit are byte-identical to that tested fix. No redundant emulator/full build was run for license/docs/ignore/checkout-only edits.
+
+The debug certificate was verified unchanged against preserved v3; source versionCode3/versionName`1.0-android-port.3`. No APK artifact is distributed by this source release. Prior independent review and v2-fails/v3-passes reproduction apply to the exact patch; the baseline-negative run was not repeated. No new physical-device/OEM, floating-IME, multi-window, landscape or complete62-test instrumentation claim. The geometry helper retains its reviewed fullscreen-coordinate assumption. Remote CI is manual-only and is not claimed green from local evidence.
+
+## Historical v1 verification (not a current artifact certification)
+
 Final app source regression: **197 JVM tests,60 instrumentation tests,0 failures,0 skips**. Separate self-instrumenting APK: **2/2** tests (genuinely different-UID controller rejected by the isolated R8 session + cold startup). Unminified isolated profile generator:1/1, 20565 unobfuscated rules. R8/resource shrinking and release lint passed; debug fixture CA absent from release; baseline.prof packaged.
 
 Startup on API35 x86_64 emulator, SwiftShader, container10CPU/22GiB (test node2CPU/2GiB), CompilationMode.None,3 cold runs: [345.724395, 344.680033, 331.109231]ms; median **344.680ms**. This is an emulator measurement, not a claim about physical speed or a measured baseline-profile speedup. Perfetto traces remain in external evidence.
 
-## APKs
+## Historical v1 APKs (not current release artifacts)
 
 These artifacts were rebuilt from the sanitized Git projection itself, which also passed197 JVM tests, release lint/R8 and the complete60-test device suite. They replace earlier workspace artifact hashes.
 
@@ -31,9 +39,14 @@ Native R8 clean-install notification grant/deny/permanent-denial/channel recover
 
 Dockerfile actually built and account-free fresh-container emulator recipe passed59 tests at its integration checkpoint; subsequent final scoped changes passed the current60-test suite on the owned API35 emulator. The recipe selects a Pixel6 profile, mainKeys=no and gestural navigation, creates private TLS keys outside source, and checks instrumentation's final OK output rather than adb's exit code. SHA256 verification remains enabled; missing fresh-cache parent/BOM metadata and external-UID-test metadata were fetched from official HTTPS repositories and pinned, not ignored. GitHub Actions is **manual-only (`workflow_dispatch`)**, targeting `[self-hosted, linux, x64, android-kvm]`; push/PR events do not queue builds or consume hosted-runner credits. **No matching runner is registered or provisioned.** Before manually dispatching, the owner must supervise registration on existing trusted Linux x86_64 infrastructure, attach all four labels, provide a usable Docker daemon and accessible `/dev/kvm` (including device permissions inside Docker), and allow at least 4 CPUs/12 GiB for each configured build container plus host/emulator overhead and dependency-download access. Do not dispatch until that runner is available. No runner/service was installed as part of this handoff. These are locally verified container/emulator results, **not a remote CI-green claim**. The CI/docs-only follow-up leaves app/build/test inputs and delivered APKs unchanged; the accepted app verification remains at `5ce83670884e1c09bff2108cebfed6386a608cee`, without a redundant full-suite rerun.
 
-## Publication gate
+## Public source release
 
-Only the sanitized projection is eligible for a new private repository. It has no inherited history. Run source and complete-history secret scans before handoff; do not include external evidence, private fixture credentials, records, recordings, emulator data, builds, iOS reference or core copies. Owner/parent reviews the scan/commit evidence and chooses/creates the private remote. No remote is configured by the implementation agent. Licensing remains private/no redistribution; see PROVENANCE.md and licenses/Apache-2.0.txt.
+The owner authorized public MIT source publication and transfer to the personal
+account `SamSaffron` (not the `term-llm` organization). The source commit does not
+itself change GitHub visibility or ownership. See RELEASE-PREPARATION.md and
+PROVENANCE.md. Private QA evidence, signing material, recordings, builds and
+reference/core repositories remain outside the source tree. Future APK releases
+and their binary notices/signing/hardware checks are separate.
 
 ## Final SPA-history regression
 

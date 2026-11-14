@@ -1,4 +1,4 @@
-name: Android private build
+name: Android build (manual self-hosted)
 on:
   workflow_dispatch:
 permissions:
@@ -9,6 +9,8 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
       - name: Build account-free container
         run: docker build -t android-check .
       - name: Unit, release lint and R8

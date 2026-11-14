@@ -1,17 +1,32 @@
 **/build
-.gradle
-.git
-local.properties
-private
-secrets
-evidence
-*.apk
-*.key
+**/.gradle
+**/.git
+**/local.properties
+**/private
+**/secrets
+**/evidence
+**/*.apk
+**/*.key
 
-.env
-.env.*
-*.pem
-*.jks
-*.keystore
+**/.env
+**/.env.*
+**/*.pem
+**/*.jks
+**/*.keystore
+
+# Do not send signing material, runtime data or captures to a build daemon.
+**/*.p8
+**/*.p12
+**/*.pfx
+**/*.mobileprovision
+**/*.provisionprofile
+**/*.aab
+**/*.db
+**/*.sqlite*
+**/*.log
+**/*.mp4
+**/__pycache__
+
+# Public build/test inputs only; private CA keys must remain outside source.
 !app/src/debug/res/raw/hardening_test_ca.pem
 !testing/config.env.example
